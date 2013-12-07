@@ -7,10 +7,13 @@ import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import android.util.Log;
+
 import com.google.android.glass.touchpad.Gesture;
 
 public class GlassOutput extends CordovaPlugin {
 
+    private static final String TAG = "GlassOutput";
     private CallbackContext callbackContext;
 
     /**
@@ -36,7 +39,7 @@ public class GlassOutput extends CordovaPlugin {
         if(action.equals("publishCard"))
         {
             pushCard(args);
-        }        
+        }
         if(action.equals("speechField"))
         {
             speechField(args);
@@ -45,7 +48,7 @@ public class GlassOutput extends CordovaPlugin {
         {
             return false;
         }
-        PluginResult result = new PluginResult(PluginResult.Status.NO_RESULT, "");
+        PluginResult result = new PluginResult(PluginResult.Status.OK, "START");
         result.setKeepCallback(true);
         callbackContext.sendPluginResult(result);
         return true;
@@ -53,6 +56,7 @@ public class GlassOutput extends CordovaPlugin {
 
     private void startTouchPad() {
         //NO-OP
+        Log.d(TAG, "This does nothing!");
     }
 
     private void speechField(CordovaArgs args) {
@@ -65,68 +69,72 @@ public class GlassOutput extends CordovaPlugin {
         
     }
     
+    //Just fire events
     public Object onMessage(String id, Object data)
     {
+        Log.d(TAG, "Message Received");
         String out = "";
         if(id.equals("onGesture"))
         {
             Gesture input = (Gesture) data;
             if(Gesture.TAP == input)
             {
-                out = "TAP";
+                out = "tap";
             }
             else if(Gesture.TWO_TAP == input)
             {
-                out = "TWO_TAP";
+                out = "twotap";
             }
             else if(Gesture.THREE_TAP == input)
             {
-                out = "THREE_TAP";
+                out = "threetap";
             }
             else if(Gesture.SWIPE_LEFT == input)
             {
-                out = "SWIPE_LEFT";
+                out = "swipeleft";
             }
             else if(Gesture.SWIPE_RIGHT == input)
             {
-                out = "SWIPE_RIGHT";
+                out = "swiperight";
             }
             else if(Gesture.SWIPE_UP == input)
             {
-                out = "SWIPE_UP";
+                out = "swipeup";
             }
             else if(Gesture.TWO_SWIPE_LEFT == input)
             {
-                out = "TWO_SWIPE_LEFT";
+                out = "twoswipeleft";
             }
             else if(Gesture.TWO_SWIPE_RIGHT == input)
             {
-                out = "TWO_SWIPE_RIGHT";
+                out = "twoswiperight";
             }
             else if(Gesture.TWO_SWIPE_UP == input)
             {
-                out = "TWO_SWIPE_UP";
+                out = "twoswipeup";
             }
             else if(Gesture.THREE_LONG_PRESS == input)
             {
-                out = "THREE_LONG_PRESS";
+                out = "threelongpress";
             }
             else if(Gesture.TWO_LONG_PRESS == input)
             {
-                out = "TWO_LONG_PRESS";
+                out = "twolongpress";
             }
             else if(Gesture.LONG_PRESS == input)
             {
-                out = "LONG_PRESS";
+                out = "longpress";
             }            
         }
         else if (id.equals("onFingerCountChange"))
         {
-            out = "FINGER_COUNT_CHANGED";
+            out = "fingercountchanged";
         }
-        PluginResult result = new PluginResult(PluginResult.Status.OK, out);
-        result.setKeepCallback(true);
-        callbackContext.sendPluginResult(result);
+        
+        String javaScriptStart = "javascript:try{cordova.fireDocumentEvent('";
+        String javaScriptEnd = "');}catch(e){console.log('exception firing pause event from native');};";
+        
+        webView.loadUrl(javaScriptStart + out + javaScriptEnd);
         
         return data;
     }

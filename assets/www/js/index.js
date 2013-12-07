@@ -27,7 +27,25 @@ var app = {
     // 'load', 'deviceready', 'offline', and 'online'.
     bindEvents: function() {
         document.addEventListener('deviceready', this.onDeviceReady, false);
+        document.addEventListener('tap', this.handleTap, false);
+        document.addEventListener('twotap', this.handleDoubleTap, false);
+        document.addEventListener('swipeleft', this.handleLeftSwipe, false);
+        document.addEventListener('swiperight', this.handleRightSwipe, false);
     },
+
+    handleTap: function() {
+      console.log("We have the tap! Fuck yeah!");
+    },
+    handleDoubleTap: function() {
+      console.log("We have the double tap! Make sure that zombie is dead!");
+    },
+    handleLeftSwipe: function() {
+      console.log("We swiped left or back.  Not sure what direction that is!");
+    },
+    handleRightSwipe: function() {
+      console.log("We swiped right or forward.  Not sure what direction that is!");
+    },
+
     // deviceready Event Handler
     //
     // The scope of 'this' is the event. In order to call the 'receivedEvent'

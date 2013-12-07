@@ -8,6 +8,21 @@ cordova.define("org.apache.cordova.glass.glass", function(require, exports, modu
 
   function Glass()
   {
+    var that = this;
+
+    channel.onCordovaReady.subscribe(function() {
+      that.startTouchPad(function() { console.log("Starting the plugin");}, 
+                         function() { console.log("Shit went bad!");});
+    });
+
+  }
+
+  /** 
+   * Get the touch event from Glass
+   */
+
+  Glass.prototype.startTouchPad = function(successCallback, errorCallback) {
+    exec(successCallback, errorCallback, "Glass", "startTouchPad", []);
   }
 
   Glass.prototype.createCard = function(jsonParams, successCallback, errorCallback)
